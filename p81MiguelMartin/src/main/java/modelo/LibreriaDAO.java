@@ -17,15 +17,14 @@ import java.util.List;
  *
  * @author miguel
  */
-public class LibreriaDAO implements ILibreria{
-    
+public class LibreriaDAO implements ILibreria {
+
     private Connection con = null;
 
     public LibreriaDAO() {
         con = Conexion.getInstance();
     }
-    
-    
+
     @Override
     public List<LibreriaVO> getAll() throws SQLException {
         List<LibreriaVO> lista = new ArrayList<>();
@@ -106,22 +105,73 @@ public class LibreriaDAO implements ILibreria{
 
     @Override
     public int insertLibreria(List<LibreriaVO> lista) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        int numFilas = 0;
+
+        for (LibreriaVO tmp : lista) {
+            numFilas += insertLibreria(tmp);
+        }
+
+        return numFilas;
     }
 
     @Override
     public int deleteLibreria(LibreriaVO l) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        int numFilas = 0;
+
+        String sql = "delete from persona where pk = ?";
+
+        // Sentencia parametrizada
+        try (PreparedStatement prest = con.prepareStatement(sql)) {
+
+            // Establecemos los parámetros de la sentencia
+            prest.setInt(1, l.getPk());
+            // Ejecutamos la sentencia
+            numFilas = prest.executeUpdate();
+        }
+        return numFilas;
     }
 
     @Override
     public int deleteLibreria() throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String sql = "delete from libreria";
+
+        int nfilas = 0;
+
+        // Preparamos el borrado de datos  mediante un Statement
+        // No hay parámetros en la sentencia SQL
+        try (Statement st = con.createStatement()) {
+            // Ejecución de la sentencia
+            nfilas = st.executeUpdate(sql);
+        }
+
+        // El borrado se realizó con éxito, devolvemos filas afectadas
+        return nfilas;
+
     }
 
     @Override
     public int updateLibreria(int pk, LibreriaVO nuevosDatos) throws SQLException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        int numFilas = 0;
+        String sql = "update persona set nombre = ?, fecha_nac = ? where pk=?";
+
+        if (findByPk(pk) == null) {
+            // La persona a actualizar no existe
+            return numFilas;
+        } else {
+            // Instanciamos el objeto PreparedStatement para inserción
+            // de datos. Sentencia parametrizada
+            try (PreparedStatement prest = con.prepareStatement(sql)) {
+
+                // Establecemos los parámetros de la sentencia
+                prest.setInt(1, pk);
+                prest.setString(2, nuevosDatos.getNombre());
+                prest.setString(3, nuevosDatos.getDireccion());
+                
+
+                numFilas = prest.executeUpdate();
+            }
+            return numFilas;
+        }
     }
-    
+
 }
