@@ -44,10 +44,16 @@ public class Programa {
             System.out.println("Borramos la persona con pk 3");
             System.out.println("Nº personas borradas " + 
                     libreriaDAO.deleteLibreria(3));
+            nuevaLista = libreriaDAO.getAll();
+            System.out.println("-------- Lista con datos recogidos desde la B.D -------------");
+            nuevaLista.forEach(System.out::println);
             System.out.println("Modificación de la libreria con pk 2");
             System.out.println("Nº Personas modificadas " + 
                     libreriaDAO.updateLibreria(2,
                             new LibreriaVO(6,"Libreria Noreste", "C/ Noreste nº 88")));
+            nuevaLista = libreriaDAO.getAll();
+            System.out.println("-------- Lista con datos recogidos desde la B.D -------------");
+            nuevaLista.forEach(System.out::println);
             System.out.println("Borramos todo");
             libreriaDAO.deleteLibreria();
             nuevaLista = libreriaDAO.getAll();
