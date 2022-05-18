@@ -33,11 +33,10 @@ public class LibreriaDAO implements ILibreria {
         // ya que no necesitamos parametrizar la sentencia SQL
         try (Statement st = con.createStatement()) {
             // Ejecutamos la sentencia y obtenemos las filas en el objeto ResultSet
-            ResultSet res = st.executeQuery("select * from persona");
+            ResultSet res = st.executeQuery("select * from Libreria");
             // Ahora construimos la lista, recorriendo el ResultSet y mapeando los datos
             while (res.next()) {
                 LibreriaVO l = new LibreriaVO();
-                // Recogemos los datos de la persona, guardamos en un objeto
                 l.setPk(res.getInt("numLibreria"));
                 l.setNombre(res.getString("nomLibreria"));
                 l.setDireccion(res.getString("dir"));
@@ -55,7 +54,7 @@ public class LibreriaDAO implements ILibreria {
         ResultSet res = null;
         LibreriaVO libreria = new LibreriaVO();
 
-        String sql = "select * from persona where pk=?";
+        String sql = "select * from Libreria where numLibreria=?";
 
         try (PreparedStatement prest = con.prepareStatement(sql)) {
             // Preparamos la sentencia parametrizada
@@ -81,7 +80,7 @@ public class LibreriaDAO implements ILibreria {
     @Override
     public int insertLibreria(LibreriaVO libreria) throws SQLException {
         int numFilas = 0;
-        String sql = "insert into persona values (?,?,?)";
+        String sql = "insert into Libreria values (?,?,?)";
 
         if (findByPk(libreria.getPk()) != null) {
             // Existe un registro con esa pk
@@ -118,7 +117,7 @@ public class LibreriaDAO implements ILibreria {
     public int deleteLibreria(LibreriaVO l) throws SQLException {
         int numFilas = 0;
 
-        String sql = "delete from persona where pk = ?";
+        String sql = "delete from Libreria where numLibreria = ?";
 
         // Sentencia parametrizada
         try (PreparedStatement prest = con.prepareStatement(sql)) {
@@ -130,10 +129,26 @@ public class LibreriaDAO implements ILibreria {
         }
         return numFilas;
     }
+    
+    public int deleteLibreria(int pk) throws SQLException {
+        int numFilas = 0;
+
+        String sql = "delete from Libreria where numLibreria = ?";
+
+        // Sentencia parametrizada
+        try (PreparedStatement prest = con.prepareStatement(sql)) {
+
+            // Establecemos los parámetros de la sentencia
+            prest.setInt(1, pk);
+            // Ejecutamos la sentencia
+            numFilas = prest.executeUpdate();
+        }
+        return numFilas;
+    }
 
     @Override
     public int deleteLibreria() throws SQLException {
-        String sql = "delete from libreria";
+        String sql = "delete from Libreria";
 
         int nfilas = 0;
 
@@ -152,7 +167,7 @@ public class LibreriaDAO implements ILibreria {
     @Override
     public int updateLibreria(int pk, LibreriaVO nuevosDatos) throws SQLException {
         int numFilas = 0;
-        String sql = "update persona set nombre = ?, fecha_nac = ? where pk=?";
+        String sql = "update Libreria set nomLibreria = ?, dir = ? where numLibreria = ?";
 
         if (findByPk(pk) == null) {
             // La persona a actualizar no existe
@@ -163,9 +178,9 @@ public class LibreriaDAO implements ILibreria {
             try (PreparedStatement prest = con.prepareStatement(sql)) {
 
                 // Establecemos los parámetros de la sentencia
-                prest.setInt(1, pk);
-                prest.setString(2, nuevosDatos.getNombre());
-                prest.setString(3, nuevosDatos.getDireccion());
+                prest.setInt(3, pk);
+                prest.setString(1, nuevosDatos.getNombre());
+                prest.setString(2, nuevosDatos.getDireccion());
                 
 
                 numFilas = prest.executeUpdate();

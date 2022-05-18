@@ -1,2 +1,5 @@
 aplicacion/Programa.class
+modelo/ILibreria.class
+modelo/LibreriaDAO.class
+modelo/LibreriaVO.class
 modelo/Conexion.class
